@@ -149,7 +149,7 @@
   var buttons = document.querySelectorAll('[data-set-lang]');
 
   function setLang(lang) {
-    panels.forEach(function (p) { p.style.display = p.dataset.lang === lang ? '' : 'none'; });
+    panels.forEach(function (p) { p.style.display = p.dataset.lang === lang ? 'block' : 'none'; });
     buttons.forEach(function (b) { b.setAttribute('aria-current', String(b.dataset.setLang === lang)); });
     document.documentElement.lang = lang;
   }
