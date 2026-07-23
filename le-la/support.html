@@ -35,6 +35,25 @@
     margin: 0 auto;
     padding: 3rem 1.25rem 4rem;
   }
+  .langswitch {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+  }
+  .langswitch button {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .langswitch button[aria-current="true"] {
+    color: var(--fg);
+    border-color: var(--accent);
+  }
   h1 {
     font-size: 1.75rem;
     margin: 0 0 0.25rem;
@@ -66,31 +85,81 @@
     border-radius: 4px;
     font-size: 0.9em;
   }
+  [data-lang="fr"] { display: none; }
 </style>
 </head>
 <body>
 <main>
-  <h1>Le/La</h1>
-  <p class="tagline">Instant French noun gender lookup.</p>
+  <div class="langswitch">
+    <button type="button" data-set-lang="en" aria-current="true">EN</button>
+    <button type="button" data-set-lang="fr">FR</button>
+  </div>
 
-  <h2>What it does</h2>
-  <p>Type a French noun, instantly see whether it's <code>le</code> or <code>la</code>. Fully offline — lookups run against a bundled dataset, no account or network connection needed.</p>
+  <div data-lang="en">
+    <h1>Le/La</h1>
+    <p class="tagline">Instant French noun gender lookup.</p>
 
-  <h2>FAQ</h2>
-  <dl class="faq">
-    <dt>A word is missing, or the gender shown looks wrong.</dt>
-    <dd>Please report it — see contact below with the word and what you expected. Corrections go into the next dataset update.</dd>
+    <h2>What it does</h2>
+    <p>Type a French noun, instantly see whether it's <code>le</code> or <code>la</code>. Fully offline — lookups run against a bundled dataset, no account or network connection needed.</p>
 
-    <dt>Does this app collect any data?</dt>
-    <dd>No. There's no account system, no analytics, and no network calls — lookups are entirely local to your device.</dd>
+    <h2>FAQ</h2>
+    <dl class="faq">
+      <dt>A word is missing, or the gender shown looks wrong.</dt>
+      <dd>Please report it — see contact below with the word and what you expected. Corrections go into the next dataset update.</dd>
 
-    <dt>Is there a quiz or flashcard mode?</dt>
-    <dd>Not yet — the app is focused on fast lookup first. It may come in a future update.</dd>
-  </dl>
+      <dt>Does this app collect any data?</dt>
+      <dd>No. There's no account system, no analytics, and no network calls — lookups are entirely local to your device.</dd>
 
-  <h2>Contact</h2>
-  <p>Email: <a href="mailto:oliver.levy.ol@gmail.com">oliver.levy.ol@gmail.com</a></p>
-  <p>Or file an issue: <a href="https://github.com/OliverLevy/OliverLevy.github.io/issues/new">open a GitHub issue</a></p>
+      <dt>Is there a quiz or flashcard mode?</dt>
+      <dd>Not yet — the app is focused on fast lookup first. It may come in a future update.</dd>
+    </dl>
+
+    <h2>Contact</h2>
+    <p>Email: <a href="mailto:oliver.levy.ol@gmail.com">oliver.levy.ol@gmail.com</a></p>
+    <p>Or file an issue: <a href="https://github.com/OliverLevy/OliverLevy.github.io/issues/new">open a GitHub issue</a></p>
+  </div>
+
+  <div data-lang="fr">
+    <h1>Le/La</h1>
+    <p class="tagline">Recherche instantanée du genre des noms français.</p>
+
+    <h2>Fonctionnement</h2>
+    <p>Tapez un nom français, découvrez instantanément s'il faut dire <code>le</code> ou <code>la</code>. Entièrement hors ligne — les recherches se font sur un jeu de données intégré, sans compte ni connexion réseau.</p>
+
+    <h2>Questions fréquentes</h2>
+    <dl class="faq">
+      <dt>Un mot est manquant, ou le genre affiché semble incorrect.</dt>
+      <dd>Merci de le signaler — voir le contact ci-dessous avec le mot concerné et le genre attendu. Les corrections sont intégrées à la prochaine mise à jour des données.</dd>
+
+      <dt>L'application collecte-t-elle des données ?</dt>
+      <dd>Non. Il n'y a ni compte, ni suivi, ni appel réseau — les recherches restent entièrement locales à votre appareil.</dd>
+
+      <dt>Y a-t-il un mode quiz ou des cartes mémoire ?</dt>
+      <dd>Pas encore — l'application se concentre d'abord sur la rapidité de recherche. Cela pourrait arriver dans une future mise à jour.</dd>
+    </dl>
+
+    <h2>Contact</h2>
+    <p>E-mail : <a href="mailto:oliver.levy.ol@gmail.com">oliver.levy.ol@gmail.com</a></p>
+    <p>Ou signalez un problème : <a href="https://github.com/OliverLevy/OliverLevy.github.io/issues/new">ouvrir un ticket GitHub</a></p>
+  </div>
 </main>
+<script>
+  var switcher = document.querySelector('.langswitch');
+  var panels = document.querySelectorAll('[data-lang]');
+  var buttons = document.querySelectorAll('[data-set-lang]');
+
+  function setLang(lang) {
+    panels.forEach(function (p) { p.style.display = p.dataset.lang === lang ? '' : 'none'; });
+    buttons.forEach(function (b) { b.setAttribute('aria-current', String(b.dataset.setLang === lang)); });
+    document.documentElement.lang = lang;
+  }
+
+  switcher.addEventListener('click', function (e) {
+    var lang = e.target.dataset.setLang;
+    if (lang) setLang(lang);
+  });
+
+  setLang(navigator.language.slice(0, 2) === 'fr' ? 'fr' : 'en');
+</script>
 </body>
 </html>
