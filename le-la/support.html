@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le/La — Support</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #5a5a5a;
+    --accent: #2563eb;
+    --border: #e5e5e5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121212;
+      --fg: #f0f0f0;
+      --muted: #a0a0a0;
+      --accent: #60a5fa;
+      --border: #2a2a2a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+  }
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 3rem 1.25rem 4rem;
+  }
+  h1 {
+    font-size: 1.75rem;
+    margin: 0 0 0.25rem;
+  }
+  .tagline {
+    color: var(--muted);
+    margin: 0 0 2.5rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+    margin: 2.25rem 0 0.75rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+  }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  p { margin: 0 0 0.75rem; }
+  a { color: var(--accent); }
+  .faq dt {
+    font-weight: 600;
+    margin-top: 1rem;
+  }
+  .faq dd {
+    margin: 0.25rem 0 0;
+    color: var(--muted);
+  }
+  code {
+    background: var(--border);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Le/La</h1>
+  <p class="tagline">Instant French noun gender lookup.</p>
+
+  <h2>What it does</h2>
+  <p>Type a French noun, instantly see whether it's <code>le</code> or <code>la</code>. Fully offline — lookups run against a bundled dataset, no account or network connection needed.</p>
+
+  <h2>FAQ</h2>
+  <dl class="faq">
+    <dt>A word is missing, or the gender shown looks wrong.</dt>
+    <dd>Please report it — see contact below with the word and what you expected. Corrections go into the next dataset update.</dd>
+
+    <dt>Does this app collect any data?</dt>
+    <dd>No. There's no account system, no analytics, and no network calls — lookups are entirely local to your device.</dd>
+
+    <dt>Is there a quiz or flashcard mode?</dt>
+    <dd>Not yet — the app is focused on fast lookup first. It may come in a future update.</dd>
+  </dl>
+
+  <h2>Contact</h2>
+  <p>Email: <a href="mailto:oliver.levy.ol@gmail.com">oliver.levy.ol@gmail.com</a></p>
+  <p>Or file an issue: <a href="https://github.com/OliverLevy/OliverLevy.github.io/issues/new">open a GitHub issue</a></p>
+</main>
+</body>
+</html>
