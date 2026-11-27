@@ -40,6 +40,11 @@
   .row:first-child { border-top:none; }
   .swatch { width:34px; height:34px; border-radius:8px; display:grid; place-items:center;
             font-weight:700; color:#000; flex:none; border:1px solid rgba(0,0,0,.15); }
+  button.swatch { padding:0; cursor:pointer; }
+  button.swatch:hover:not(:disabled) { border-color:var(--text); }
+  .colors { width:100%; display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding-left:44px; }
+  .colors .swatch { width:28px; height:28px; font-size:12px; }
+  .colors .swatch.current { outline:2px solid var(--text); outline-offset:2px; }
   .name { flex:1; min-width:120px; }
   .badge { font-size:12px; color:var(--accent); font-weight:600; }
   .actions { display:flex; gap:6px; flex-wrap:wrap; }
@@ -66,7 +71,7 @@
     <section class="card">
       <h2>Passwords <small id="countHint"></small></h2>
       <div id="list"></div>
-      <p class="hint">Click a name to rename it (press Enter to save). Reveal and Delete need a hold on the key.</p>
+      <p class="hint">Click a name to rename it (press Enter to save). Click the colored square to change its color. Reveal and Delete need a hold on the key.</p>
     </section>
 
     <section class="card">
@@ -104,7 +109,7 @@
         <input id="len" type="number" min="12" max="32" style="width:80px">
       </div>
       <div class="field">
-        <label for="bright">Screen brightness</label>
+        <label for="bright">Brightness</label>
         <input id="bright" type="range" min="10" max="255">
       </div>
       <p class="hint">Changes save on the key right away.</p>
@@ -294,9 +299,9 @@ function renderList() {
   items.forEach((it, idx) => {
     const row = el('div', 'row');
 
-    const sw = el('div', 'swatch', String(it.i + 1));
+    const sw = btn(String(it.i + 1), () => toggleColors(it, row), false,
+                   (COLOR_NAMES[it.color] || '') + ' (click to change)', 'swatch');
     sw.style.background = COLORS[it.color] || '#888';
-    sw.title = COLOR_NAMES[it.color] || '';
 
     const name = el('input', 'name');
     name.maxLength = 12;
@@ -331,6 +336,32 @@ async function rename(i, name) {
     return refresh();
   }
   report(await send(['RENAME', i, name]), 'Renamed.');
+  refresh();
+}
+
+function toggleColors(it, row) {
+  const open = row.querySelector('.colors');
+  if (open) return open.remove();
+  const box = el('div', 'colors');
+  COLORS.forEach((c, ci) => {
+    const users = items.filter(o => o.color === ci && o.i !== it.i).map(o => '#' + (o.i + 1));
+    const b = btn('', () => setColor(it.i, ci), false,
+                  COLOR_NAMES[ci] + (users.length ? ' (also used by ' + users.join(', ') + ')' : ''),
+                  'swatch' + (ci === it.color ? ' current' : ''));
+    b.style.background = c;
+    if (users.length) b.textContent = '•';
+    box.append(b);
+  });
+  row.append(box);
+}
+
+async function setColor(i, c) {
+  const r = await send(['COLOR', i, c]);
+  if (!r.ok && r.final[1] === 'unknown command') {
+    setStatus('This key needs a firmware update to change colors.', true);
+  } else {
+    report(r, 'Color changed.');
+  }
   refresh();
 }
 
