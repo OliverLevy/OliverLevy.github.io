@@ -71,7 +71,7 @@
     <section class="card">
       <h2>Passwords <small id="countHint"></small></h2>
       <div id="list"></div>
-      <p class="hint">Click a name to rename it (press Enter to save). Click the colored square to change its color. Reveal and Delete need a hold on the key.</p>
+      <p class="hint">Click a name to rename it (press Enter to save). Click the colored square to change its color. The dropdown sets what the key presses after typing that password. Reveal and Delete need a hold on the key.</p>
     </section>
 
     <section class="card">
@@ -97,7 +97,7 @@
     <section class="card">
       <h2>Settings</h2>
       <div class="field">
-        <label for="after">After typing, press</label>
+        <label for="after">New passwords press</label>
         <select id="after">
           <option value="0">Nothing</option>
           <option value="1">Tab</option>
@@ -112,7 +112,8 @@
         <label for="bright">Brightness</label>
         <input id="bright" type="range" min="10" max="255">
       </div>
-      <p class="hint">Changes save on the key right away.</p>
+      <p class="hint">Changes save on the key right away. "New passwords press" is the starting
+        choice for passwords you add; change each one in the list above.</p>
     </section>
 
     <section class="card">
@@ -286,6 +287,7 @@ async function refresh() {
   maxItems = +r.final[2] || 5;
   items = r.lines.filter(l => l[0] === 'ITEM').map(l => ({
     i: +l[1], color: +l[2], name: l[3] || '', active: l[4] === '1',
+    after: l[5] === undefined ? null : +l[5],      // null: older firmware
   }));
   renderList();
 }
@@ -312,6 +314,19 @@ function renderList() {
 
     row.append(sw, name);
     if (it.active) row.append(el('span', 'badge', 'Active'));
+
+    if (it.after !== null) {
+      const after = el('select');
+      after.title = 'After typing this password, press';
+      ['+ nothing', '+ Tab', '+ Enter'].forEach((label, v) => {
+        const o = el('option', null, label);
+        o.value = v;
+        after.append(o);
+      });
+      after.value = it.after;
+      after.onchange = () => setAfter(it.i, after.value);
+      row.append(after);
+    }
 
     const actions = el('div', 'actions');
     actions.append(
@@ -362,6 +377,12 @@ async function setColor(i, c) {
   } else {
     report(r, 'Color changed.');
   }
+  refresh();
+}
+
+async function setAfter(i, v) {
+  const label = ['nothing', 'Tab', 'Enter'][v];
+  report(await send(['AFTER', i, v]), `#${i + 1} now presses ${label} after typing.`);
   refresh();
 }
 
